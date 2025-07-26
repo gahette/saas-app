@@ -1,7 +1,7 @@
 import CompanionCard from "@/components/CompanionCard";
 import CompanionsList from "@/components/CompanionsList";
 import Cta from "@/components/CTA";
-import {recentSessions} from "@/constants";
+import { recentSessions } from "@/constants";
 
 const Page = () => {
   return (
@@ -13,7 +13,7 @@ const Page = () => {
           name="Neura thr Brainy Explorer"
           topic="Neural Network of the brain"
           subject="science"
-          duration= {45}
+          duration={45}
           color="#ffda6e"
         />
 
@@ -37,9 +37,9 @@ const Page = () => {
       </section>
       <section className="home-section">
         <CompanionsList
-        title="Recent completed Sessions"
-        companions={recentSessions}
-        className="w-2/3 max-lg:w-full"
+          title="Recent completed Sessions"
+          companions={recentSessions}
+          className="w-2/3 max-lg:w-full"
         />
         <Cta />
       </section>
