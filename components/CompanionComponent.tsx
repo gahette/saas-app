@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import soundwaves from "@/constants/soundwaves.json";
+import { addToSessionHistory } from "@/lib/actions/companion.actions";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -14,7 +15,7 @@ enum CallStatus {
   FINISHED = "FINISHED",
 }
 
-const CompanionConponent = ({
+const CompanionComponent = ({
   companionId,
   subject,
   topic,
@@ -43,7 +44,10 @@ const CompanionConponent = ({
   useEffect(() => {
     const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
 
-    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+    const onCallEnd = () => {
+      setCallStatus(CallStatus.FINISHED);
+      addToSessionHistory(companionId);
+    };
 
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
@@ -101,7 +105,7 @@ const CompanionConponent = ({
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    vapi.start(configureAssistant(voice, style), assistantOverrides);
+    await vapi.start(configureAssistant(voice, style), assistantOverrides);
   };
 
   return (
@@ -217,4 +221,4 @@ const CompanionConponent = ({
   );
 };
 
-export default CompanionConponent;
+export default CompanionComponent;
