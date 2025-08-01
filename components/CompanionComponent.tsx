@@ -29,6 +29,7 @@ const CompanionComponent = ({
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [messages, setMessages] = useState<SavedMessage[]>([]);
+    const [ejectionError, setEjectionError] = useState<string | null>(null);
 
     const lottieRef = useRef<LottieRefCurrentProps>(null);
 
@@ -61,7 +62,17 @@ const CompanionComponent = ({
 
         const onSpeechEnd = () => setIsSpeaking(false);
 
-        const onError = (error: Error) => console.log("Error", error);
+        const onError = (error: Error) => {
+            console.log("Error", error);
+            
+            // Handle meeting ejection error
+            if (error.message === "Meeting has ended" || 
+                error.message === "Meeting ended due to ejection: Meeting has ended") {
+                setCallStatus(CallStatus.FINISHED);
+                setEjectionError("Meeting ended due to ejection: Meeting has ended");
+                addToSessionHistory(companionId).catch((err) => console.error(err));
+            }
+        };
 
         vapi.on("call-start", onCallStart);
         vapi.on("call-end", onCallEnd);
@@ -122,7 +133,7 @@ const CompanionComponent = ({
                                 "absolute transition-opacity duration-1000",
                                 callStatus === CallStatus.FINISHED ||
                                 callStatus === CallStatus.INACTIVE
-                                    ? "opacity-1001"
+                                    ? "opacity-100"
                                     : "opacity-0",
                                 callStatus === CallStatus.CONNECTING &&
                                 "opacity-100 animate-pulse",
@@ -197,12 +208,17 @@ const CompanionComponent = ({
                 </div>
             </section>
             <section className="transcript">
+                {ejectionError && (
+                    <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+                        <p>{ejectionError}</p>
+                    </div>
+                )}
                 <div className="transcript-message no-scrollbar">
                     {messages.map((message, index) => {
                         if (message.role === "assistant") {
                             return (
                                 <p key={index} className="max-sm:text-sm">
-                                    {name.split(" ")[0].replace("/[.,]/g,", "")}:{" "}
+                                    {name.split(" ")[0].replace(/[.,]/g, "")}:{" "}
                                     {message.content}
                                 </p>
                             );
@@ -216,7 +232,7 @@ const CompanionComponent = ({
                     })}
                 </div>
 
-                <div className="transcrip-fade"/>
+                <div className="transcript-fade"/>
             </section>
         </section>
     );

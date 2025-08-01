@@ -11,7 +11,6 @@ enum Subject {
   science = "science",
   history = "history",
   coding = "coding",
-  geography = "geography",
   economics = "economics",
   finance = "finance",
   business = "business",
