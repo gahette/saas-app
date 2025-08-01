@@ -5,6 +5,9 @@ import {currentUser} from "@clerk/nextjs/server";
 import Image from "next/image";
 import {redirect} from "next/navigation";
 
+// Mark page as dynamic to resolve headers() usage in auth
+export const dynamic = 'force-dynamic';
+
 interface CompanionSessionPageProps {
     params: Promise<{ id: string }>;
 }

@@ -14,6 +14,9 @@ import Image from "next/image";
 import {redirect} from "next/navigation";
 import CompanionsList from "@/components/CompanionsList";
 
+// Mark page as dynamic to resolve headers() usage in auth
+export const dynamic = 'force-dynamic';
+
 const Profile = async () => {
     const user = await currentUser();
 
